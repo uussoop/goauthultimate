@@ -29,7 +29,7 @@ type UtilityFuncs struct {
 	CreateUser              func(identifier *string) any
 	CheckIdentifierPassword func(identifier, password *string) bool
 	SendCode                func(identifier *string) bool
-	ValidateCode            func(code *string) bool
+	ValidateCode            func(identifier *string, code *string) bool
 }
 type AuthConfig struct {
 	Utilities UtilityFuncs

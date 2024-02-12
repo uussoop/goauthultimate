@@ -198,7 +198,6 @@ func Register(u *UtilityFuncs) gin.HandlerFunc {
 				ErrorResponseMessage{Status: ERROR, Error: "Invalid request."},
 			)
 
-			// c.JSON(http.StatusBadRequest, RegisterResponse{Status: http.StatusBadRequest, Message: "Invalid request."})
 			return
 		}
 
@@ -210,7 +209,6 @@ func Register(u *UtilityFuncs) gin.HandlerFunc {
 				ErrorResponseMessage{Status: ERROR_EXIST_USER, Error: "Invalid request."},
 			)
 
-			// c.JSON(http.StatusBadRequest, RegisterResponse{Status: http.StatusBadRequest, Message: "Invalid request."})
 			return
 		}
 
@@ -314,7 +312,7 @@ func ConfirmCode(u *UtilityFuncs) gin.HandlerFunc {
 			return
 		}
 
-		ok = u.ValidateCode(&auth.Code)
+		ok = u.ValidateCode(&auth.Username, &auth.Code)
 		if !ok {
 			c.JSON(
 				http.StatusOK,
@@ -325,6 +323,18 @@ func ConfirmCode(u *UtilityFuncs) gin.HandlerFunc {
 			)
 			return
 
+		}
+		user := u.CreateUser(&auth.Username)
+		if user == nil {
+			c.JSON(
+				http.StatusOK,
+				ErrorResponseMessage{
+					Status: ERROR_EXIST_USER,
+					Error:  "User already exists.",
+				},
+			)
+
+			return
 		}
 
 		token, err := CreateToken(auth.Username, time.Duration(24*time.Hour))
