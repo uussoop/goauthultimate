@@ -50,7 +50,7 @@ func JWTMiddleware(u *UtilityFuncs) gin.HandlerFunc {
 			}
 			fmt.Println(username)
 			user := u.GetUser(&username)
-			if user != nil {
+			if user == nil {
 
 				fmt.Println(err)
 				c.JSON(http.StatusOK, ErrorResponseMessage{Status: ERROR_AUTH_TOKEN, Error: "token check ended with error"})
@@ -69,7 +69,7 @@ func JwtSsoMiddleware(u *UtilityFuncs) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := extractBearerToken(c)
 		// var token string
-		token = c.GetHeader("Authorization")
+		// token = c.GetHeader("Authorization")
 		if token == "" {
 
 			c.JSON(
