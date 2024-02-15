@@ -324,17 +324,21 @@ func ConfirmCode(u *UtilityFuncs) gin.HandlerFunc {
 			return
 
 		}
-		user := u.CreateUser(&auth.Username)
-		if user == nil {
-			c.JSON(
-				http.StatusOK,
-				ErrorResponseMessage{
-					Status: ERROR_EXIST_USER,
-					Error:  "User already exists.",
-				},
-			)
+		exists := u.UserExists(&auth.Username)
+		if !exists {
 
-			return
+			user := u.CreateUser(&auth.Username)
+			if user == nil {
+				c.JSON(
+					http.StatusOK,
+					ErrorResponseMessage{
+						Status: ERROR_EXIST_USER,
+						Error:  "User already exists.",
+					},
+				)
+
+				return
+			}
 		}
 
 		token, err := CreateToken(auth.Username, time.Duration(24*time.Hour))
