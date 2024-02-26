@@ -30,6 +30,7 @@ type UtilityFuncs struct {
 	CheckIdentifierPassword func(identifier, password *string) bool
 	SendCode                func(identifier *string) bool
 	ValidateCode            func(identifier *string, code *string) bool
+	SetJwtSecret            func() []byte
 }
 type AuthConfig struct {
 	Utilities UtilityFuncs
@@ -43,6 +44,10 @@ var isRoutesSet = false
 func GoAuthMiddleware(
 	authc *AuthConfig,
 ) gin.HandlerFunc {
+	if authc.Utilities.SetJwtSecret != nil {
+
+		secret = authc.Utilities.SetJwtSecret()
+	}
 	if !isRoutesSet {
 		var base string
 		strings.Replace(authc.Base, "/", base, -1)
