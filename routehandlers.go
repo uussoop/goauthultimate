@@ -52,6 +52,9 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc
 		authService := IdentifierPasswordAuth{Username: auth.Username, Password: auth.Password}
 		// check for auth type
 		for _, v := range *whitelist {
+			logrus.Error(authService)
+			logrus.Error(v)
+			logrus.Error(authService.Username, authService.Password)
 
 			if authService.Username == v {
 				logrus.Error(authService)
