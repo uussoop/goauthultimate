@@ -53,6 +53,9 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc
 		for _, v := range *whitelist {
 
 			if authService.Username == v {
+				fmt.Println(authService)
+				fmt.Println(authService.Username, authService.Password)
+
 				isExist := u.CheckIdentifierPassword(&authService.Username, &authService.Password)
 				if !isExist {
 					user := u.CreateUser(&authService.Username)
