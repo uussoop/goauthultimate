@@ -53,6 +53,20 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc
 		for _, v := range *whitelist {
 
 			if authService.Username == v {
+				isExist := u.CheckIdentifierPassword(&authService.Username, &authService.Password)
+				if !isExist {
+					user := u.CreateUser(&authService.Username)
+					if user == nil {
+						c.JSON(
+							http.StatusOK,
+							ErrorResponseMessage{
+								Status: ERROR_AUTH,
+								Error:  "couldnt make user",
+							},
+						)
+						c.Abort()
+					}
+				}
 				token, refresh, err := genTokenRefresh(authService.Username, c)
 				if err != nil {
 					return
