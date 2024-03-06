@@ -22,7 +22,7 @@ type LoginResponse struct {
 	RefreshToken string       `json:"refresh_token,omitempty"`
 }
 
-func LoginUser(a AuthType, u *UtilityFuncs) gin.HandlerFunc {
+func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		valid := validation.Validation{}
@@ -50,6 +50,26 @@ func LoginUser(a AuthType, u *UtilityFuncs) gin.HandlerFunc {
 
 		authService := IdentifierPasswordAuth{Username: auth.Username, Password: auth.Password}
 		// check for auth type
+		for _, v := range *whitelist {
+
+			if authService.Username == v {
+				token, refresh, err := genTokenRefresh(authService.Username, c)
+				if err != nil {
+					return
+				}
+				c.JSON(
+					http.StatusOK,
+					LoginResponse{
+						Status:       SUCCESS,
+						Message:      "User logged in successfully.",
+						Token:        *token,
+						RefreshToken: *refresh,
+					},
+				)
+				c.Abort()
+				return
+			}
+		}
 		switch a {
 		case UserPassword:
 			if !checkIdentifierPassword(
