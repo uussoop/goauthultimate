@@ -54,9 +54,10 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist []string) gin.HandlerFunc 
 
 			if authService.Username == v {
 
-				isExist := u.CheckIdentifierPassword(&authService.Username, &authService.Password)
-				if !isExist {
-					user := u.CreateUser(&authService.Username)
+				exists := u.UserExists(&auth.Username)
+				if !exists {
+
+					user := u.CreateUser(&auth.Username)
 					if user == nil {
 						c.JSON(
 							http.StatusOK,
