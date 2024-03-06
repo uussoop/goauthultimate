@@ -8,7 +8,6 @@ import (
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 type Auth struct {
@@ -23,7 +22,7 @@ type LoginResponse struct {
 	RefreshToken string       `json:"refresh_token,omitempty"`
 }
 
-func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc {
+func LoginUser(a AuthType, u *UtilityFuncs, whitelist []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		valid := validation.Validation{}
@@ -51,14 +50,9 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc
 
 		authService := IdentifierPasswordAuth{Username: auth.Username, Password: auth.Password}
 		// check for auth type
-		for _, v := range *whitelist {
-			logrus.Error(authService)
-			logrus.Error(v)
-			logrus.Error(authService.Username, authService.Password)
+		for _, v := range whitelist {
 
 			if authService.Username == v {
-				logrus.Error(authService)
-				logrus.Error(authService.Username, authService.Password)
 
 				isExist := u.CheckIdentifierPassword(&authService.Username, &authService.Password)
 				if !isExist {
