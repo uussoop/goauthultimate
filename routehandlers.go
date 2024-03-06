@@ -8,6 +8,7 @@ import (
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type Auth struct {
@@ -53,8 +54,8 @@ func LoginUser(a AuthType, u *UtilityFuncs, whitelist *[]string) gin.HandlerFunc
 		for _, v := range *whitelist {
 
 			if authService.Username == v {
-				fmt.Println(authService)
-				fmt.Println(authService.Username, authService.Password)
+				logrus.Error(authService)
+				logrus.Error(authService.Username, authService.Password)
 
 				isExist := u.CheckIdentifierPassword(&authService.Username, &authService.Password)
 				if !isExist {
