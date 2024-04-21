@@ -51,27 +51,24 @@ func GoAuthMiddleware(
 	}
 	if !isRoutesSet {
 		var base string
-		strings.Replace(authc.Base, "/", base, -1)
+		base = strings.Replace(authc.Base, "/", base, -1)
 		auth := authc.Router.Group(fmt.Sprintf("/%s", base))
 
 		switch authc.Authtype {
 		case UserPassword:
-			auth.POST("/register", Register(&authc.Utilities))
+			auth.POST("/register", Register(authc.Authtype, &authc.Utilities))
 			auth.POST("/login", LoginUser(authc.Authtype, &authc.Utilities, authc.WhiteList))
 			auth.GET("/refresh", RefreshToken(&authc.Utilities))
-			auth.POST("/confirmcode", ConfirmCode(&authc.Utilities))
 
 		case MailPassword:
-			auth.POST("/register", Register(&authc.Utilities))
+			auth.POST("/register", Register(authc.Authtype, &authc.Utilities))
 			auth.POST("/login", LoginUser(authc.Authtype, &authc.Utilities, authc.WhiteList))
 			auth.GET("/refresh", RefreshToken(&authc.Utilities))
-			auth.POST("/confirmcode", ConfirmCode(&authc.Utilities))
 
 		case PhoneNumberPassword:
-			auth.POST("/register", Register(&authc.Utilities))
+			auth.POST("/register", Register(authc.Authtype, &authc.Utilities))
 			auth.POST("/login", LoginUser(authc.Authtype, &authc.Utilities, authc.WhiteList))
 			auth.GET("/refresh", RefreshToken(&authc.Utilities))
-			auth.POST("/confirmcode", ConfirmCode(&authc.Utilities))
 
 		case Phone:
 			auth.POST("/login", LoginUser(authc.Authtype, &authc.Utilities, authc.WhiteList))
@@ -89,7 +86,7 @@ func GoAuthMiddleware(
 			// auth.POST("/confirmcode", ConfirmCode(&authc.Utilities))
 
 		default:
-			auth.POST("/register", Register(&authc.Utilities))
+			auth.POST("/register", Register(authc.Authtype, &authc.Utilities))
 			auth.POST("/login", LoginUser(authc.Authtype, &authc.Utilities, authc.WhiteList))
 			auth.GET("/refresh", RefreshToken(&authc.Utilities))
 			auth.POST("/confirmcode", ConfirmCode(&authc.Utilities))

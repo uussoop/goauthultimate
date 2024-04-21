@@ -223,7 +223,7 @@ type RegisterResponse struct {
 	Token   string       `json:"token,omitempty"`
 }
 
-func Register(u *UtilityFuncs) gin.HandlerFunc {
+func Register(a AuthType, u *UtilityFuncs) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		valid := validation.Validation{}
 		var auth Auth
@@ -290,6 +290,16 @@ func Register(u *UtilityFuncs) gin.HandlerFunc {
 				},
 			)
 
+			return
+		}
+		if a == UserPassword || a == MailPassword || a == PhoneNumberPassword {
+			c.JSON(
+				http.StatusOK,
+				RegisterResponse{
+					Status:  SUCCESS,
+					Message: "Account created successfully",
+				},
+			)
 			return
 		}
 		suc := u.SendCode(&auth.Username)
